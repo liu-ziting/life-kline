@@ -23,6 +23,7 @@ watch(isActive, val => {
 
 async function handleDivine(data: { name: string; gender: string; place: string; date: string; time: string }) {
     isLoading.value = true
+    fateData.value = [] // Clear previous data
 
     const yearStr = data.date.split('-')[0]
     const year = parseInt(yearStr || '2000')

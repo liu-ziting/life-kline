@@ -7,9 +7,9 @@ export interface ApiConfig {
 }
 
 const DEFAULT_CONFIG: ApiConfig = {
-    endpoint: 'https://open.bigmodel.cn/api/paas/v4/chat/completions',
-    model: 'GLM-4.1V-Thinking-Flash',
-    apiKey: 'a835b9f6866d48ec956d341418df8a50.NuhlKYn58EkCb5iP'
+    endpoint: 'https://api.deepseek.com/v1/chat/completions',
+    model: 'deepseek-chat',
+    apiKey: 'sk-af533ac60b4a42bd916a06c8ee3a4c8a'
 }
 
 export class AIService {
@@ -124,7 +124,7 @@ export class AIService {
                     { role: 'system', content: systemPrompt },
                     { role: 'user', content: userPrompt }
                 ],
-                temperature: 0.7
+                temperature: 0.95
             })
         })
 

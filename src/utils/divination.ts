@@ -58,9 +58,9 @@ export function generateFate(seedBase: number): FatePoint[] {
     let arr: FatePoint[] = []
     let score = 50
     const rng = new Random(seedBase)
-
+    
     // 趋势因子：当前是处于上升通道还是下降通道
-    let trend = 0
+    let trend = 0 
     // 趋势持续时间
     let trendDuration = 0
 
@@ -98,7 +98,7 @@ export function generateFate(seedBase: number): FatePoint[] {
             if (r < 0.3) trend = -1 // 熊市
             else if (r < 0.6) trend = 1 // 牛市
             else trend = 0 // 震荡
-
+            
             // 趋势持续 1-10 年
             trendDuration = Math.floor(rng.range(1, 10))
         }
@@ -106,16 +106,16 @@ export function generateFate(seedBase: number): FatePoint[] {
 
         // 2. 计算基础波动
         // 基础波动范围
-        let volatility = rng.range(2, 8)
-
+        // let volatility = rng.range(2, 8); 
+        
         // 根据趋势计算涨跌幅
         let change = 0
         if (trend === 1) {
-            change = rng.range(-2, 12) // 总体向上，但也可能回调
+             change = rng.range(-2, 12) // 总体向上，但也可能回调
         } else if (trend === -1) {
-            change = rng.range(-12, 2) // 总体向下，但也可能反弹
+             change = rng.range(-12, 2) // 总体向下，但也可能反弹
         } else {
-            change = rng.range(-5, 5) // 震荡
+             change = rng.range(-5, 5)  // 震荡
         }
 
         // 3. 黑天鹅事件 (5% 概率)
@@ -129,7 +129,7 @@ export function generateFate(seedBase: number): FatePoint[] {
 
         let open = score
         let close = open + change
-
+        
         // 限制分数范围 10-100
         close = Math.max(10, Math.min(100, close))
 
@@ -137,10 +137,10 @@ export function generateFate(seedBase: number): FatePoint[] {
         // 影线长度随机
         let upperShadow = rng.range(0, 5)
         let lowerShadow = rng.range(0, 5)
-
+        
         let high = Math.max(open, close) + upperShadow
         let low = Math.min(open, close) - lowerShadow
-
+        
         // 确保 high/low 不太离谱
         high = Math.min(100, high)
         low = Math.max(0, low)
@@ -155,11 +155,10 @@ export function generateFate(seedBase: number): FatePoint[] {
             low: Number(low.toFixed(1)),
             high: Number(high.toFixed(1)),
             isUp: isUp,
-            event: events[Math.floor(rng.next() * events.length)],
-            quote: quotes[Math.floor(rng.next() * quotes.length)]
+            event: (events[Math.floor(rng.next() * events.length)] || events[0]) as string,
+            quote: (quotes[Math.floor(rng.next() * quotes.length)] || quotes[0]) as string
         })
         score = close
     }
     return arr
 }
-
