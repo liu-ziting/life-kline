@@ -1,17 +1,36 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import FateBook from './components/FateBook.vue'
 import ScrollPanel from './components/ScrollPanel.vue'
+import SettingsModal from './components/SettingsModal.vue'
 import { getBazi, generateFate, type Bazi, type FatePoint } from './utils/divination'
-import { AIService } from './services/aiService'
+import { AIService, type ApiConfig } from './services/aiService'
 
 const isActive = ref(false)
 const isLoading = ref(false)
+const isSettingsOpen = ref(false)
 const fateData = ref<FatePoint[]>([])
 const bazi = ref<Bazi | null>(null)
 const birthYear = ref(2000)
 
-const aiService = new AIService()
+let aiService = new AIService()
+
+onMounted(() => {
+    // Load config from local storage if exists
+    const savedConfig = localStorage.getItem('ai_config')
+    if (savedConfig) {
+        try {
+            const config = JSON.parse(savedConfig)
+            aiService = new AIService(config)
+        } catch (e) {
+            console.error('Failed to load saved config', e)
+        }
+    }
+})
+
+function handleSettingsSave(config: ApiConfig) {
+    aiService = new AIService(config)
+}
 
 watch(isActive, val => {
     if (val) {
@@ -55,6 +74,7 @@ async function handleDivine(data: { name: string; gender: string; place: string;
 <template>
     <div class="header">
         <div class="header-title">人生大盘 · 流年</div>
+        <button class="settings-btn" @click="isSettingsOpen = true" title="天机设置">⚙</button>
     </div>
 
     <div class="container">
@@ -73,6 +93,9 @@ async function handleDivine(data: { name: string; gender: string; place: string;
         <div class="spinner"></div>
         <div class="loader-text">天机推演中...</div>
     </div>
+
+    <!-- Settings Modal -->
+    <SettingsModal v-model:visible="isSettingsOpen" @save="handleSettingsSave" />
 </template>
 
 <style>
@@ -134,6 +157,26 @@ async function handleDivine(data: { name: string; gender: string; place: string;
     100% {
         opacity: 0.5;
     }
+}
+
+.settings-btn {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--ink);
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: 100;
+}
+
+.settings-btn:hover {
+    opacity: 1;
+    transform: translateY(-50%) rotate(90deg);
 }
 </style>
 

@@ -7,9 +7,9 @@ export interface ApiConfig {
 }
 
 const DEFAULT_CONFIG: ApiConfig = {
-    endpoint: 'https://api.deepseek.com/v1/chat/completions',
-    model: 'deepseek-chat',
-    apiKey: 'sk-af533ac60b4a42bd916a06c8ee3a4c8a'
+    endpoint: '',
+    model: '',
+    apiKey: ''
 }
 
 export class AIService {
